@@ -40,11 +40,18 @@
       <div class="row justify-center q-pa-md">
         <q-input
           v-model="post.location"
+          :loading="locationLoading"
           class="col col-sm-6"
           dense
           label="location">
-          <template v-slot:append>
-            <q-btn round dense flat icon="room" />
+          <template v-slot:append v-if="!locationLoading">
+            <q-btn
+              @click="getLocation"
+              icon="room"
+              dense
+              flat
+              round
+            />
           </template>
         </q-input>
       </div>
@@ -71,7 +78,8 @@ export default {
       },
       imgCaptured: false,
       imgUpload: [],
-      cameraEnabled: true
+      cameraEnabled: true,
+      locationLoading: false
     }
   },
   methods: {
@@ -95,7 +103,7 @@ export default {
       let context = canvas.getContext('2d')
       context.drawImage(video, 0, 0, canvas.width, canvas.height)
       this.imgCaptured = true
-      
+
       canvas.toBlob(blob => (this.post.photo = blob))
       this.disableCamera()
     },
@@ -122,6 +130,34 @@ export default {
         img.src = e.target.result
       }
       reader.readAsDataURL(file)
+    },
+    getLocation(){
+      this.locationLoading = true
+      navigator.geolocation.getCurrentPosition(position => {
+        this.getCityAndCountry(position)
+      }, err => {
+        console.log(err)
+        this.showLocationError()
+      }, { timeout: 7000 })
+    },
+    async getCityAndCountry(position){
+      try {
+        let res = await this.$axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+        console.log(res.data)
+  
+        this.post.location = `${res.data.address.city}, ${res.data.address.country}`
+        this.locationLoading = false
+      }catch(err){
+        console.log(err)
+        this.showLocationError()
+      }
+    },
+    showLocationError(){
+      this.$q.dialog({
+        title: 'Alert',
+        message: 'Could not find your location'
+      })
+      this.locationLoading = false
     }
   },
   mounted(){
