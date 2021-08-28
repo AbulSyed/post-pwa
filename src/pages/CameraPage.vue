@@ -65,6 +65,7 @@
 
 <script>
 import { uid } from 'quasar'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -78,21 +79,15 @@ export default {
       },
       imgCaptured: false,
       imgUpload: [],
-      cameraEnabled: true,
+      // cameraEnabled: true,
       locationLoading: false
     }
   },
+  computed: {
+    ...mapState('camera', ['cameraEnabled'])
+  },
   methods: {
-    initCamera(){
-      navigator.mediaDevices.getUserMedia({
-        video: true
-      }).then(stream => {
-        console.log(this.$refs.video)
-        this.$refs.video.srcObject = stream
-      }).catch(err => {
-        this.cameraEnabled = false
-      })
-    },
+    ...mapActions('camera', ['initCamera', 'disableCamera']),
     captureImg(){
       let video = this.$refs.video
       let canvas = this.$refs.canvas
@@ -105,12 +100,7 @@ export default {
       this.imgCaptured = true
 
       canvas.toBlob(blob => (this.post.photo = blob))
-      this.disableCamera()
-    },
-    disableCamera(){
-      this.$refs.video.srcObject.getVideoTracks().forEach(track => {
-        track.stop()
-      })
+      this.disableCamera(this.$refs.video)
     },
     captureImgFallback(file){
       this.post.photo = file
@@ -143,7 +133,6 @@ export default {
     async getCityAndCountry(position){
       try {
         let res = await this.$axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
-        console.log(res.data)
   
         this.post.location = `${res.data.address.city}, ${res.data.address.country}`
         this.locationLoading = false
@@ -161,11 +150,11 @@ export default {
     }
   },
   mounted(){
-    this.initCamera()
+    this.initCamera(this.$refs.video)
   },
   beforeUnmount(){
     if(this.cameraEnabled){
-      this.disableCamera()
+      this.disableCamera(this.$refs.video)
     }
   }
 }
