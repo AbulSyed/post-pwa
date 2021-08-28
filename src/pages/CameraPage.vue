@@ -2,33 +2,18 @@
   <q-page class="q-pa-md constrain-large">
 
     <div class="camera-frame q-pa-md">
-      <video v-show="!imgCaptured" ref="video" class="full-width" autoplay />
-      <canvas v-show="imgCaptured" ref="canvas" class="full-width" height="240" />
+      <q-img
+        src="https://imagesvc.meredithcorp.io/v3/mm/image?q=85&c=sc&poi=face&w=1600&h=800&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F28%2F2017%2F02%2Feiffel-tower-paris-france-EIFFEL0217.jpg"
+      />
     </div>
     <div class="text-center q-pa-md">
       <q-btn
-        v-if="cameraEnabled"
-        @click="captureImg"
         icon="camera"
         size="lg"
         dense
         flat
         round
       />
-      <div class="row justify-center">
-        <q-file
-          v-if="!cameraEnabled"
-          v-model="imgUpload"
-          @update:model-value="captureImgFallback"
-          accept="image/*"
-          label="Select an image"
-          outlined
-        >
-          <template v-slot:prepend>
-            <q-icon name="attach_file" />
-          </template>
-        </q-file>
-      </div>
       <div class="row justify-center q-pa-md">
         <q-input
           v-model="post.caption"
@@ -40,23 +25,16 @@
       <div class="row justify-center q-pa-md">
         <q-input
           v-model="post.location"
-          :loading="locationLoading"
           class="col col-sm-6"
           dense
           label="location">
-          <template v-slot:append v-if="!locationLoading">
-            <q-btn
-              @click="getLocation"
-              icon="room"
-              dense
-              flat
-              round
-            />
+          <template v-slot:append>
+            <q-btn round dense flat icon="room" />
           </template>
         </q-input>
       </div>
       <div class="row justify-center q-pa-md">
-        <q-btn flat dense round icon="add" size="lg" />
+        <q-btn flat dense round icon="add" size="lg" @click="handleClick" />
       </div>
     </div>
 
@@ -65,7 +43,6 @@
 
 <script>
 import { uid } from 'quasar'
-import { mapState, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -76,87 +53,14 @@ export default {
         location: '',
         photo: null,
         date: Date.now()
-      },
-      imgCaptured: false,
-      imgUpload: [],
-      // cameraEnabled: true,
-      locationLoading: false
+      }
     }
-  },
-  computed: {
-    ...mapState('camera', ['cameraEnabled'])
   },
   methods: {
-    ...mapActions('camera', ['initCamera', 'disableCamera']),
-    captureImg(){
-      let video = this.$refs.video
-      let canvas = this.$refs.canvas
-
-      canvas.width = video.getBoundingClientRect().width
-      canvas.height = video.getBoundingClientRect().height
-
-      let context = canvas.getContext('2d')
-      context.drawImage(video, 0, 0, canvas.width, canvas.height)
-      this.imgCaptured = true
-
-      canvas.toBlob(blob => (this.post.photo = blob))
-      this.disableCamera(this.$refs.video)
-    },
-    captureImgFallback(file){
-      this.post.photo = file
-
-      let canvas = this.$refs.canvas
-      let context = canvas.getContext('2d')
-
-      var reader = new FileReader()
-      reader.onload = e => {
-        var img = new Image()
-        img.onload = () => {
-          canvas.width = img.width
-          canvas.height = img.height
-          context.drawImage(img,0,0)
-          this.imgCaptured = true
-        }
-        img.src = e.target.result
-      }
-      reader.readAsDataURL(file)
-    },
-    getLocation(){
-      this.locationLoading = true
-      navigator.geolocation.getCurrentPosition(position => {
-        this.getCityAndCountry(position)
-      }, err => {
-        console.log(err)
-        this.showLocationError()
-      }, { timeout: 7000 })
-    },
-    async getCityAndCountry(position){
-      try {
-        let res = await this.$axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
-  
-        this.post.location = `${res.data.address.city}, ${res.data.address.country}`
-        this.locationLoading = false
-      }catch(err){
-        console.log(err)
-        this.showLocationError()
-      }
-    },
-    showLocationError(){
-      this.$q.dialog({
-        title: 'Alert',
-        message: 'Could not find your location'
-      })
-      this.locationLoading = false
+    handleClick() {
+      console.log(this.post)
     }
   },
-  mounted(){
-    this.initCamera(this.$refs.video)
-  },
-  beforeUnmount(){
-    if(this.cameraEnabled){
-      this.disableCamera(this.$refs.video)
-    }
-  }
 }
 </script>
 

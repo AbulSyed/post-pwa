@@ -2,7 +2,6 @@ import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
 import posts from './modules/posts'
-import camera from './modules/camera'
 
 /*
  * If not building with SSR mode, you can
@@ -16,8 +15,7 @@ import camera from './modules/camera'
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
-      posts,
-      camera,
+      posts
     },
 
     // enable strict mode (adds overhead!)
