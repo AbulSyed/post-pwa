@@ -32,11 +32,18 @@
       <div class="row justify-center q-pa-md">
         <q-input
           v-model="post.location"
+          :loading="locationLoading"
           class="col col-sm-6"
           dense
           label="location">
-          <template v-slot:append>
-            <q-btn round dense flat icon="room" />
+          <template v-slot:append v-if="!locationLoading">
+            <q-btn
+              @click="getLocation"
+              icon="room"
+              dense
+              flat
+              round
+            />
           </template>
         </q-input>
       </div>
@@ -62,14 +69,15 @@ export default {
         photo: null,
         date: Date.now()
       },
-      img: []
+      img: [],
+      locationLoading: false
     }
   },
   methods: {
-    handleClick() {
+    handleClick(){
       console.log(this.post)
     },
-    getImg(file) {
+    getImg(file){
       // updates photo data and set canvas to image selected
       this.post.photo = file
 
@@ -88,6 +96,33 @@ export default {
       }
       reader.readAsDataURL(file)
     },
+    getLocation(){
+      this.locationLoading = true
+      navigator.geolocation.getCurrentPosition(position => {
+        this.getCityAndCountry(position)
+      }, err => {
+        console.log(err)
+        this.showLocationError()
+      }, { timeout: 7000 })
+    },
+    async getCityAndCountry(position){
+      try {
+        let res = await this.$axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+  
+        this.post.location = `${res.data.address.city}, ${res.data.address.country}`
+        this.locationLoading = false
+      }catch(err){
+        console.log(err)
+        this.showLocationError()
+      }
+    },
+    showLocationError(){
+      this.$q.dialog({
+        title: 'Alert',
+        message: 'Could not find your location'
+      })
+      this.locationLoading = false
+    }
   },
 }
 </script>
