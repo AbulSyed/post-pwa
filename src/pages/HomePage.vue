@@ -90,16 +90,20 @@
 
 <script>
 import { date } from 'quasar'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   computed: {
     ...mapState('posts', ['posts', 'loadingPosts'])
   },
   methods: {
+    ...mapActions('posts', ['getPosts']),
     formatDate(timestamp){
       return date.formatDate(timestamp, 'Do MMM YYYY')
     }
   },
+  created(){
+    this.getPosts()
+  }
 }
 </script>

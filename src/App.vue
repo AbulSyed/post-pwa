@@ -1,17 +1,10 @@
 <template>
   <router-view />
 </template>
-
 <script>
-import { mapActions } from 'vuex'
+import { defineComponent } from 'vue';
 
-export default {
-  name: 'App',
-  methods: {
-    ...mapActions('posts', ['getPosts'])
-  },
-  created(){
-    this.getPosts()
-  }
-}
+export default defineComponent({
+  name: 'App'
+})
 </script>
