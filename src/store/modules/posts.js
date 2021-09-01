@@ -19,7 +19,7 @@ export default {
     async getPosts(context){
       context.commit('SET_LOADING_POSTS', true)
       try {
-        const res = await api.get('http://localhost:3000/posts')
+        const res = await api.get(`${process.env.API}/posts`)
         context.commit('SET_POSTS', res.data)
         context.commit('SET_LOADING_POSTS', false)
       }catch(err){
