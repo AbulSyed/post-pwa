@@ -21,9 +21,11 @@ admin.initializeApp({
 const db = admin.firestore();
 
 router.get('/posts', async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  
   const posts = [];
 
-  const snapshot = await db.collection('posts').get();
+  const snapshot = await db.collection('posts').orderBy('timestamp', 'desc').get();
 
   snapshot.forEach((doc) => {
     console.log(doc.id, '=>', doc.data());
