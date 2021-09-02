@@ -1,10 +1,11 @@
-# Quasar App (pwa-post-app)
+# Post PWA
 
-A Quasar Framework app
+### What is a PWA
+PWA is an enhance web app that looks and feels like a native app.
 
 ## Install the dependencies
 ```bash
-npm install
+npm i
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
@@ -17,6 +18,3 @@ quasar dev
 ```bash
 quasar build
 ```
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://v2.quasar.dev/quasar-cli/quasar-conf-js).
