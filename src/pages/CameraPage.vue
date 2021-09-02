@@ -49,7 +49,7 @@
       </div>
 
       <div class="row justify-center q-pa-md">
-        <q-btn flat dense round icon="add" size="lg" @click="handleClick" />
+        <q-btn flat dense round icon="add" size="lg" @click="handleSubmit" />
       </div>
     </div>
 
@@ -74,8 +74,20 @@ export default {
     }
   },
   methods: {
-    handleClick(){
-      console.log(this.post)
+    async handleSubmit(){
+      const formData = new FormData();
+      formData.append('id', this.post.id);
+      formData.append('caption', this.post.caption);
+      formData.append('location', this.post.location);
+      formData.append('timestamp', this.post.date);
+      formData.append('file', this.post.photo, this.post.id + 'png');
+
+      try {
+        const res = await this.$axios.post(`${process.env.API}/posts`, formData);
+        console.log(res);
+      }catch(err){
+        console.log(err.message);
+      }
     },
     getImg(file){
       // updates photo data and set canvas to image selected

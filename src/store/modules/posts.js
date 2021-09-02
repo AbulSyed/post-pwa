@@ -23,10 +23,7 @@ export default {
         context.commit('SET_POSTS', res.data)
         context.commit('SET_LOADING_POSTS', false)
       }catch(err){
-        Dialog.create({
-          title: 'Alert',
-          message: err.message
-        })
+        console.log(err.message)
         context.commit('SET_LOADING_POSTS', false)
       }
     }
