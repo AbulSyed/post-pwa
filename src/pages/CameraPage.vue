@@ -25,7 +25,7 @@
           v-model="post.caption"
           class="col col-sm-6"
           dense
-          label="caption"
+          label="caption *"
         />
       </div>
 
@@ -49,7 +49,7 @@
       </div>
 
       <div class="row justify-center q-pa-md">
-        <q-btn flat dense round icon="add" size="lg" @click="handleSubmit" />
+        <q-btn flat dense round icon="add" size="lg" @click="handleSubmit" :disable="!post.caption || !post.photo" />
       </div>
     </div>
 
@@ -58,6 +58,7 @@
 
 <script>
 import { uid } from 'quasar'
+import { mapActions } from 'vuex'
 
 export default {
   data() {
@@ -74,19 +75,20 @@ export default {
     }
   },
   methods: {
+    ...mapActions('posts', ['addPost']),
     async handleSubmit(){
-      const formData = new FormData();
-      formData.append('id', this.post.id);
-      formData.append('caption', this.post.caption);
-      formData.append('location', this.post.location);
-      formData.append('timestamp', this.post.date);
-      formData.append('file', this.post.photo, this.post.id + 'png');
+      const formData = new FormData()
+      formData.append('id', this.post.id)
+      formData.append('caption', this.post.caption)
+      formData.append('location', this.post.location)
+      formData.append('timestamp', this.post.date)
+      formData.append('file', this.post.photo, this.post.id + 'png')
 
       try {
-        const res = await this.$axios.post(`${process.env.API}/posts`, formData);
-        console.log(res);
+        const res = await this.$axios.post(`${process.env.API}/posts`, formData)
+        this.addPost(res.data)
       }catch(err){
-        console.log(err.message);
+        console.log(err.message)
       }
     },
     getImg(file){
@@ -96,7 +98,7 @@ export default {
       let canvas = this.$refs.canvas
       let context = canvas.getContext('2d')
 
-      var reader = new FileReader();
+      var reader = new FileReader()
       reader.onload = event => {
         var img = new Image()
         img.onload = () => {

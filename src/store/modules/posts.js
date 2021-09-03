@@ -1,5 +1,4 @@
 import { api } from 'boot/axios'
-import { Dialog } from 'quasar'
 
 export default {
   namespaced: true,
@@ -13,7 +12,16 @@ export default {
     },
     SET_LOADING_POSTS(state, loadingPosts){
       state.loadingPosts = loadingPosts
-    }
+    },
+    ADD_POST(state, post){
+      state.posts = state.posts.concat({
+        _id: post.id,
+        caption: post.caption,
+        location: post.location,
+        imgUrl: post.imgUrl,
+        timestamp: post.timestamp
+      })
+    },
   },
   actions: {
     async getPosts(context){
@@ -26,6 +34,10 @@ export default {
         console.log(err.message)
         context.commit('SET_LOADING_POSTS', false)
       }
+    },
+    addPost(context, post){
+      context.commit('ADD_POST', post)
+      this.$router.push('/')
     }
   },
   getters: {

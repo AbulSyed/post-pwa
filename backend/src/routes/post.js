@@ -43,7 +43,7 @@ router.get('/posts', async (req, res) => {
   
   const posts = [];
 
-  const snapshot = await db.collection('posts').orderBy('timestamp', 'desc').get();
+  const snapshot = await db.collection('posts').orderBy('timestamp', 'asc').get();
 
   snapshot.forEach((doc) => {
     // console.log(doc.id, '=>', doc.data());
@@ -103,15 +103,16 @@ router.post('/posts', async (req, res) => {
       const docRef = db.collection('posts').doc(fields.id);
   
       try {
-        await docRef.set({
+        const doc = {
           id: fields.id,
           caption: fields.caption,
           location: fields.location,
           timestamp: parseInt(fields.timestamp),
           imgUrl: `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${uploadedFile.name}?alt=media&token=${uuid}`
-        });
+        };
+        await docRef.set(doc);
 
-        res.send('Done parsing form');
+        res.status(200).send(doc);
       }catch(err) {
         console.log(err);
       }
