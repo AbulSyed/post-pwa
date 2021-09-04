@@ -77,6 +77,7 @@ export default {
   methods: {
     ...mapActions('posts', ['addPost']),
     async handleSubmit(){
+      this.$q.loading.show()
       const formData = new FormData()
       formData.append('id', this.post.id)
       formData.append('caption', this.post.caption)
@@ -87,8 +88,20 @@ export default {
       try {
         const res = await this.$axios.post(`${process.env.API}/posts`, formData)
         this.addPost(res.data)
+        this.$q.notify({
+          message: 'Post created',
+          actions: [
+            { label: 'Dismiss', color: 'white' }
+          ]
+        })
+        this.$q.loading.hide()
       }catch(err){
+        this.$q.loading.hide()
         console.log(err.message)
+        this.$q.dialog({
+          title: 'Alert',
+          message: 'Could not create post'
+        })
       }
     },
     getImg(file){

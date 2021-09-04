@@ -35,7 +35,7 @@
         </template>
 
         <template v-if="!loadingPosts && !posts.length">
-          <h5 class="text-center text-grey">No posts yet!</h5>
+          <h5 class="text-center text-grey">Couldn't find any posts!</h5>
         </template>
 
         <!-- Skeleton loading effect -->
