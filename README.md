@@ -1,7 +1,7 @@
 # Post PWA
 
 ### What is a PWA
-PWA is an enhance web app that looks and feels like a native app.
+PWA is an enhanced web app that looks and feels like a native app.
 
 ## Install the dependencies
 ```bash
