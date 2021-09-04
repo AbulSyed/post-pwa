@@ -3,7 +3,9 @@
 ### What is a PWA
 PWA is an enhanced web app that looks and feels like a native app.
 
-- [ ] test
+- [ ] Push notifications
+- [ ] Background sync, so app can work offline
+- [ ] Installable to home screen
 
 ## Install the dependencies
 ```bash
