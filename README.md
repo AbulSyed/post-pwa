@@ -3,6 +3,7 @@
 ### What is a PWA
 PWA is an enhanced web app that looks and feels like a native app.
 
+### Core features of a PWA
 - [ ] Push notifications
 - [ ] Background sync, so app can work offline
 - [ ] Installable to home screen
