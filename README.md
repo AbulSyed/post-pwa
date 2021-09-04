@@ -8,16 +8,24 @@ PWA is an enhanced web app that looks and feels like a native app.
 - [ ] Background sync, so app can work offline
 - [ ] Installable to home screen
 
+### PWA key terms
+- Web app manifest file (manifest.json) - JSON file which provides information about app, e.g. name of app, home screen icon, name under icon etc. Browser uses this information to be display when app is downloaded to home screen. (More on manifest https://web.dev/add-manifest/)
+- Service workers - Javascript files that runs in the background listening to certain event allowing 1. Loads content offline. 2. Background sync -> When user performs action offline that require data, it will perform actions in background when connection is reestablished. 3. Use push nofifications.
+
 ## Install the dependencies
 ```bash
 npm i
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Start the app in development mode
 ```bash
 quasar dev
 ```
 
+### Start the app pwa mode
+```bash
+quasar dev -m pwa
+```
 
 ### Build the app for production
 ```bash
