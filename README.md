@@ -4,14 +4,19 @@
 PWA is an enhanced web app that looks and feels like a native app.
 
 ### Core features of a PWA
+- [ ] Installable to home screen
 - [ ] Push notifications
 - [ ] Background sync, so app can work offline
-- [ ] Installable to home screen
 
 ### PWA key terms
 - Web app manifest file (manifest.json) - JSON file which provides information about app, e.g. name of app, home screen icon, name under icon etc. Browser uses this information to be display when app is downloaded to home screen. (More on manifest https://web.dev/add-manifest/ &@ https://developer.mozilla.org/en-US/docs/Web/Manifest)
-- Service workers - Javascript files that runs in the background listening to certain event allowing 1. Loads content offline. 2. Background sync -> When user performs action offline that require data, it will perform actions in background when connection is reestablished. 3. Use push nofifications.
-
+- Service worker - Javascript file that runs in the background (even when app is closed) listening to certain event allowing:
+  1. Loading of content offline, by caching resources of webapp (html, css & js) and requests. 
+  2. Background sync -> When user performs action offline that require data, it will perform actions in background when connection is reestablished.
+  3. Use of push nofifications & send even if app is closed.
+- Workbox - Google tool that makes working with a service worker easier. Workbox makes the following easier:
+  - Precaching & caching strategies
+  - Background sync
 
 ## Installing to home screen
 - Usefule article https://web.dev/customize-install/ [How to provide your own in-app install experience]
@@ -65,6 +70,21 @@ window.addEventListener('appinstalled', () => {
 });
 ```
 
+## Setting up a service worker
+
+Useful reading material https://developers.google.com/web/ilt/pwa/introduction-to-service-worker [Introduction to service workers]
+
+- Register service worker in javascript file
+- We can listen for the install and active event (from sw.js file using self)
+
+## Building a PWA with quasar
+
+- Start app in pwa dev mode using ```quasar dev -m pwa```
+- Quasar generates manifest.json file and links automatically to the html file. You can edit manifest.json in the quasar.config.js file.
+- Quasar uses workbox framework to make it easier to manage our service worker. Quasar also generates a src-pwa folder with the following:
+  - register-service-worker.js -> registers service worker listens to various events
+  - custom-service-worker.js -> where all our service worker code lives (setup precaching, background sync and push notifications)
+
 ## Install the dependencies
 ```bash
 npm i
@@ -74,8 +94,6 @@ npm i
 ```bash
 quasar dev || quasar dev -m pwa
 ```
-
-Quasar generates manifest.json file and links automatically. You can edit manifest.json in the quasar.config.js file.
 
 ### Build the app for production
 ```bash
