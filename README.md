@@ -5,6 +5,7 @@ PWA is an enhanced web app that looks and feels like a native app.
 
 ### Core features of a PWA
 - [ ] Installable to home screen
+- [ ] Precahing, cache core files of our app files (html, css, js) on browser, so all can be loaded from browsers cahce
 - [ ] Push notifications
 - [ ] Background sync, so app can work offline
 
