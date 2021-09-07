@@ -5,15 +5,15 @@ PWA is an enhanced web app that looks and feels like a native app.
 
 ### Core features of a PWA
 - [ ] Installable to home screen
-- [ ] Precahing, cache core files of our app files (html, css, js) on browser, so all can be loaded from browsers cahce
+- [ ] Precahing - cache core files (html, css, js) on browser, so all can be loaded from browsers cahce
 - [ ] Push notifications
-- [ ] Background sync, so app can work offline
+- [ ] Background sync - so app can work offline
 
 ### PWA key terms
-- Web app manifest file (manifest.json) - JSON file which provides information about app, e.g. name of app, home screen icon, name under icon etc. Browser uses this information to be display when app is downloaded to home screen. (More on manifest https://web.dev/add-manifest/ &@ https://developer.mozilla.org/en-US/docs/Web/Manifest)
+- Web app manifest file (manifest.json) - JSON file which provides information about app, e.g. name of app, home screen icon, name under icon etc. Browser uses this information to display when app is downloaded to home screen. (More on manifest https://web.dev/add-manifest/ &@ https://developer.mozilla.org/en-US/docs/Web/Manifest)
 - Service worker - Javascript file that runs in the background (even when app is closed) listening to certain event allowing:
   1. Loading of content offline, by caching resources of webapp (html, css & js) and requests. 
-  2. Background sync -> When user performs action offline that require data, it will perform actions in background when connection is reestablished.
+  2. Background sync -> When user performs action offline that requires data, it will perform action in background when connection is reestablished.
   3. Use of push nofifications & send even if app is closed.
 - Workbox - Google tool that makes working with a service worker easier. Workbox makes the following easier:
   - Precaching & caching strategies
@@ -22,7 +22,7 @@ PWA is an enhanced web app that looks and feels like a native app.
 ## Building a PWA with quasar
 
 - Start app in pwa dev mode using ```quasar dev -m pwa```
-- Quasar generates manifest.json file and links automatically to the html file. You can edit manifest.json in the quasar.config.js file.
+- Quasar generates manifest.json file and links it automatically to the html file. You can edit manifest.json in the quasar.config.js file.
 - Quasar uses workbox framework to make it easier to manage our service worker. Quasar also generates a src-pwa folder with the following:
   - register-service-worker.js -> registers service worker listens to various events
   - custom-service-worker.js -> where all our service worker code lives (setup precaching, background sync and push notifications)
@@ -81,13 +81,24 @@ window.addEventListener('appinstalled', () => {
 
 ## Precaching
 
-- Without workbox we will have to listen for service worker install event and specify all files to cache 1 by 1. But using workbox, workbox automatically generates list of files to store in cache. All files are then stored in a workbox manifest file. https://developers.google.com/web/tools/workbox/guides/get-started#precaching [workbox - precaching]. This can be implemented with the lines below:
+- Without workbox we will have to listen for service worker install event and specify all files to cache 1 by 1. But using workbox, workbox automatically generates list of files to store in cache. All files are then stored in a workbox manifest file. https://developers.google.com/web/tools/workbox/guides/get-started#precaching [workbox - precaching]. The lines below cache the core app files (html, css, js)
 ```
 import { precacheAndRoute } from 'workbox-precaching';
 
 // Use with precache injection
 precacheAndRoute(self.__WB_MANIFEST);
 ```
+
+### Caching strategies
+
+- We may not just want to cache the core app files but also data from external requests. Caching strategies can help us achieve this.
+- There are several different caching stratergies; useful reading material https://developers.google.com/web/tools/workbox/modules/workbox-strategies [Workbox Strategies]
+
+### Strategies used in this build:
+
+- Stale-While-Revalidate - Pattern allows you to respond to the request as quickly as possible with a cached response if available. Common strategy where having the most up-to-date resource is not vital to the application. SW -> Cache -> Page -> Network -> Cache
+- Cache First - Some network requests can be stored in cache. When app is always used, the data will always be fetch from cache unless cache is cleared or empty (cache miss). This is useful for font families.
+- Network First - Service worker makes request to network to store in cache. If nerwork request fails, then most recent data in cache is returned. Ideal if alot of network request will be made.
 
 ## Setting up a service worker [without quasar]
 
