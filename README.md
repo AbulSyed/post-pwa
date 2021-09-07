@@ -19,8 +19,16 @@ PWA is an enhanced web app that looks and feels like a native app.
   - Precaching & caching strategies
   - Background sync
 
+## Building a PWA with quasar
+
+- Start app in pwa dev mode using ```quasar dev -m pwa```
+- Quasar generates manifest.json file and links automatically to the html file. You can edit manifest.json in the quasar.config.js file.
+- Quasar uses workbox framework to make it easier to manage our service worker. Quasar also generates a src-pwa folder with the following:
+  - register-service-worker.js -> registers service worker listens to various events
+  - custom-service-worker.js -> where all our service worker code lives (setup precaching, background sync and push notifications)
+
 ## Installing to home screen
-- Usefule article https://web.dev/customize-install/ [How to provide your own in-app install experience]
+- Useful article https://web.dev/customize-install/ [How to provide your own in-app install experience]
 - From above link: 'If your Progressive Web App meets the required installation criteria, the browser fires a ```beforeinstallprompt``` event. Save a reference to the event, and update your user interface to indicate that the user can install your PWA. This is highlighted below.'
 
 ### Lets show a button if the beforeinstallprompt event fires
@@ -71,20 +79,22 @@ window.addEventListener('appinstalled', () => {
 });
 ```
 
-## Setting up a service worker
+## Precaching
+
+- Without workbox we will have to listen for service worker install event and specify all files to cache 1 by 1. But using workbox, workbox automatically generates list of files to store in cache. All files are then stored in a workbox manifest file. https://developers.google.com/web/tools/workbox/guides/get-started#precaching [workbox - precaching]. This can be implemented with the lines below:
+```
+import { precacheAndRoute } from 'workbox-precaching';
+
+// Use with precache injection
+precacheAndRoute(self.__WB_MANIFEST);
+```
+
+## Setting up a service worker [without quasar]
 
 Useful reading material https://developers.google.com/web/ilt/pwa/introduction-to-service-worker [Introduction to service workers]
 
 - Register service worker in javascript file
 - We can listen for the install and active event (from sw.js file using self)
-
-## Building a PWA with quasar
-
-- Start app in pwa dev mode using ```quasar dev -m pwa```
-- Quasar generates manifest.json file and links automatically to the html file. You can edit manifest.json in the quasar.config.js file.
-- Quasar uses workbox framework to make it easier to manage our service worker. Quasar also generates a src-pwa folder with the following:
-  - register-service-worker.js -> registers service worker listens to various events
-  - custom-service-worker.js -> where all our service worker code lives (setup precaching, background sync and push notifications)
 
 ## Install the dependencies
 ```bash
