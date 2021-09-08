@@ -43,7 +43,7 @@ router.get('/posts', async (req, res) => {
   
   const posts = [];
 
-  const snapshot = await db.collection('posts').orderBy('timestamp', 'asc').get();
+  const snapshot = await db.collection('posts').orderBy('timestamp', 'desc').get();
 
   snapshot.forEach((doc) => {
     // console.log(doc.id, '=>', doc.data());

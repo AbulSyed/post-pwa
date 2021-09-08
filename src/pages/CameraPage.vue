@@ -74,6 +74,12 @@ export default {
       locationLoading: false
     }
   },
+  computed: {
+    backgroundSyncSupported() {
+      // Check if browser support service workers & background sync
+      return 'serviceWorker' in navigator && 'SyncManager' in window
+    }
+  },
   methods: {
     ...mapActions('posts', ['addPost']),
     async handleSubmit(){
@@ -96,12 +102,21 @@ export default {
         })
         this.$q.loading.hide()
       }catch(err){
-        this.$q.loading.hide()
         console.log(err.message)
-        this.$q.dialog({
-          title: 'Alert',
-          message: 'Could not create post'
-        })
+        if(!navigator.onLine && this.backgroundSyncSupported) {
+          this.$q.dialog({
+            title: 'Alert',
+            message: 'Looks like your offline. Post will be uploaded once connection has been reestablished.'
+          }).onOk(() => {
+            this.$router.push('/')
+          })
+        }else {
+          this.$q.dialog({
+            title: 'Alert',
+            message: 'Could not create post'
+          })
+        }
+        this.$q.loading.hide()
       }
     },
     getImg(file){

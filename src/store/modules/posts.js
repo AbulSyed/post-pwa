@@ -14,7 +14,7 @@ export default {
       state.loadingPosts = loadingPosts
     },
     ADD_POST(state, post){
-      state.posts = state.posts.concat({
+      state.posts.unshift({
         _id: post.id,
         caption: post.caption,
         location: post.location,

@@ -13,6 +13,9 @@ import {NetworkFirst} from 'workbox-strategies';
 
 import {Queue} from 'workbox-background-sync';
 
+// disable workbox logs
+self.__WB_DISABLE_DEV_LOGS = true
+
 // Use with precache injection
 precacheAndRoute(self.__WB_MANIFEST)
 

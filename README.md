@@ -106,8 +106,21 @@ precacheAndRoute(self.__WB_MANIFEST);
 - Background sync helps keep app functional and its data synchronised when offline.
   - If user makes http post request, request will be stored in a queue.
     1. With internet connection, request will be sent to endpoint.
-    2. Without internet connection, request will stay in queue and be sent to endpoint once internet connection is available
-- Not all browsers support background sync, hence detect if background sync available in service worker.
+    2. Without internet connection, request will stay in queue and sent to endpoint once internet connection is available
+- Not all browsers support background sync, hence detect if background sync available in service worker, before creating and adding a request to the queue.
+
+### Check if background sync supported in browser
+```
+backgroundSyncSupported() {
+  // Check if browser support service workers & background sync
+  return 'serviceWorker' in navigator && 'SyncManager' in window
+}
+```
+
+### Check if background sync supported in workbox service worker
+```
+let backgroundSyncSupported = 'sync' in self.registration ? true: false
+```
 - Reading https://developers.google.com/web/tools/workbox/modules/workbox-background-sync [Workbox Background Sync]
 
 ## Install the dependencies
