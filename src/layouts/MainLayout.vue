@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="bg-white text-grey-10" bordered>
+    <q-header class="bg-dark text-grey-1" bordered>
       <q-toolbar class="constrain">
 
         <q-btn flat dense round size="18px" icon="home" to="/" class="gt-xs" />
@@ -11,20 +11,25 @@
           Post pwa
         </q-toolbar-title>
 
+        <q-avatar class="lt-sm" rounded size="30px">
+          <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+        </q-avatar>
+
         <q-btn flat dense round size="18px" icon="camera" to="/camera" class="gt-xs" />
 
       </q-toolbar>
     </q-header>
 
-    <q-footer class="bg-white text-grey-10" bordered>
-      <div v-if="showInstallBanner" class="bg-primary">
+    <q-footer class="bg-dark text-grey-1">
+      <div v-if="showInstallBanner" class="bg-secondary">
         <div class="constrain">
-          <q-banner dense inline-actions class="bg-primary text-white">
-            Install Post PWA?
+          <q-banner dense inline-actions class="bg-secondary text-black">
+            <q-icon name="download" size="14px" />
+            <b>Install App?</b>
 
             <template v-slot:action>
-              <q-btn @click="installApp" flat label="Yes" dense class="q-px-sm" />
-              <q-btn @click="this.showInstallBanner = false" flat label="Later" dense class="q-px-sm" />
+              <q-btn @click="installApp" flat icon="check" dense class="q-px-sm" />
+              <q-btn @click="this.showInstallBanner = false" flat icon="clear" dense class="q-px-sm" />
               <q-btn @click="neverShowInstallAppBanner" flat label="Never" dense class="q-px-sm" />
             </template>
           </q-banner>
