@@ -7,7 +7,7 @@ PWA is an enhanced web app that looks and feels like a native app.
 - [ ] Installable to home screen
 - [ ] Precahing - cache core files (html, css, js) on browser, so all can be loaded from browsers cahce
 - [ ] Push notifications
-- [ ] Background sync - so app can work offline
+- [ ] Background sync - allows app to work offline and keeps user data synchronised when offline
 
 ### PWA key terms
 - Web app manifest file (manifest.json) - JSON file which provides information about app, e.g. name of app, home screen icon, name under icon etc. Browser uses this information to display when app is downloaded to home screen. (More on manifest https://web.dev/add-manifest/ &@ https://developer.mozilla.org/en-US/docs/Web/Manifest)
@@ -15,6 +15,7 @@ PWA is an enhanced web app that looks and feels like a native app.
   1. Loading of content offline, by caching resources of webapp (html, css & js) and requests. 
   2. Background sync -> When user performs action offline that requires data, it will perform action in background when connection is reestablished.
   3. Use of push nofifications & send even if app is closed.
+- Useful reading https://developers.google.com/web/ilt/pwa/introduction-to-service-worker [Introduction to service workers]
 - Workbox - Google tool that makes working with a service worker easier. Workbox makes the following easier:
   - Precaching & caching strategies
   - Background sync
@@ -100,12 +101,14 @@ precacheAndRoute(self.__WB_MANIFEST);
 - Cache First - Some network requests can be stored in cache. When app is always used, the data will always be fetch from cache unless cache is cleared or empty (cache miss). This is useful for font families.
 - Network First - Service worker makes request to network to store in cache. If nerwork request fails, then most recent data in cache is returned. Ideal if alot of network request will be made.
 
-## Setting up a service worker [without quasar]
+## Background sync
 
-Useful reading material https://developers.google.com/web/ilt/pwa/introduction-to-service-worker [Introduction to service workers]
-
-- Register service worker in javascript file
-- We can listen for the install and active event (from sw.js file using self)
+- Background sync helps keep app functional and its data synchronised when offline.
+  - If user makes http post request, request will be stored in a queue.
+    1. With internet connection, request will be sent to endpoint.
+    2. Without internet connection, request will stay in queue and be sent to endpoint once internet connection is available
+- Not all browsers support background sync, hence detect if background sync available in service worker.
+- Reading https://developers.google.com/web/tools/workbox/modules/workbox-background-sync [Workbox Background Sync]
 
 ## Install the dependencies
 ```bash
