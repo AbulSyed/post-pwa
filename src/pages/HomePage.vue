@@ -1,6 +1,21 @@
 <template>
   <q-page class="q-pa-md constrain">
 
+    <div v-if="showNotifsBanner && pushNotifsSupported" class="bg-secondary">
+      <div>
+        <q-banner inline-actions class="bg-dark text-white q-mb-md">
+          <q-icon class="q-px-xs" name="notifications" size="16px" />
+          <b>Enable notifications?</b>
+
+          <template v-slot:action>
+            <q-btn @click="enableNotifs" flat icon="check" dense class="q-px-sm" />
+            <q-btn @click="this.showNotifsBanner = false" flat icon="clear" dense class="q-px-sm" />
+            <q-btn @click="neverShowNotifsBanner" flat label="Never" dense class="q-px-sm" />
+          </template>
+        </q-banner>
+      </div>
+    </div>
+
     <div class="row q-col-gutter-lg">
 
       <div class="col-12 col-sm-8">
@@ -93,12 +108,56 @@ import { date } from 'quasar'
 import { mapState } from 'vuex'
 
 export default {
+  data() {
+    return {
+      showNotifsBanner: false,
+    }
+  },
   computed: {
-    ...mapState('posts', ['posts', 'loadingPosts'])
+    ...mapState('posts', ['posts', 'loadingPosts']),
+    pushNotifsSupported() {
+      // check if push notifications support in browser, not just standard notifications
+      return 'PushManager' in window
+    },
+    serviceWorkerSupported() {
+      return 'serviceWorker' in navigator
+    }
   },
   methods: {
     formatDate(timestamp){
       return date.formatDate(timestamp, 'Do MMM YYYY')
+    },
+    enableNotifs(){
+      Notification.requestPermission(res => {
+        this.neverShowNotifsBanner()
+        if(res === 'granted') {
+          this.displayGrantedNotif()
+        }
+      })
+    },
+    displayGrantedNotif(){
+      // https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification
+      // Notification docs
+      new Notification('You\'re subbed to pushed notifications', {
+        body: 'Thanks for subscribing',
+        icon: 'icons/icon-128x128.png',
+        iamge: 'icons/icon-128x128.png',
+        badge: 'icons/icon-128x128.png',
+        vibrate: [100, 50, 200],
+        tag: 'confirm-notif',
+        renotify: true
+      })
+    },
+    neverShowNotifsBanner(){
+      this.showNotifsBanner = false
+      localStorage.setItem('neverShowNotifsBanner', true)
+    }
+  },
+  mounted() {
+    let neverShowNotifsBanner = localStorage.getItem('neverShowNotifsBanner')
+
+    if(!neverShowNotifsBanner) {
+      this.showNotifsBanner = true;
     }
   }
 }
