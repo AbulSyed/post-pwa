@@ -129,7 +129,7 @@ export default {
     },
     enableNotifs(){
       Notification.requestPermission(res => {
-        this.neverShowNotifsBanner()
+        // this.neverShowNotifsBanner()
         if(res === 'granted') {
           this.displayGrantedNotif()
         }
@@ -138,15 +138,29 @@ export default {
     displayGrantedNotif(){
       // https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification
       // Notification docs
-      new Notification('You\'re subbed to pushed notifications', {
-        body: 'Thanks for subscribing',
-        icon: 'icons/icon-128x128.png',
-        iamge: 'icons/icon-128x128.png',
-        badge: 'icons/icon-128x128.png',
-        vibrate: [100, 50, 200],
-        tag: 'confirm-notif',
-        renotify: true
-      })
+      // new Notification('You\'re subbed to pushed notifications', {
+      //   body: 'Thanks for subscribing',
+      //   icon: 'icons/icon-128x128.png',
+      //   iamge: 'icons/icon-128x128.png',
+      //   badge: 'icons/icon-128x128.png',
+      //   vibrate: [100, 50, 200],
+      //   tag: 'confirm-notif',
+      //   renotify: true
+      // })
+      if(this.serviceWorkerSupported && this.pushNotifsSupported) {
+        // using service worker to display a notification
+        navigator.serviceWorker.ready.then(swreg => {
+          swreg.showNotification('You\'re subbed to pushed notifications', {
+            body: 'Thanks for subscribing',
+            icon: 'icons/icon-128x128.png',
+            iamge: 'icons/icon-128x128.png',
+            badge: 'icons/icon-128x128.png',
+            vibrate: [100, 50, 200],
+            tag: 'confirm-notif',
+            renotify: true
+          })
+        })
+      }
     },
     neverShowNotifsBanner(){
       this.showNotifsBanner = false

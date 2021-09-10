@@ -87,3 +87,27 @@ if(backgroundSyncSupported) {
     event.respondWith(bgSyncLogic());
   });
 }
+
+/*
+
+  Push notifications
+
+  - We use service worker to listen out for user interactions on the notifications
+
+  - Service worker can listen to interactions even when app is closed
+
+  https://developers.google.com/web/ilt/pwa/introduction-to-push-notifications#listen_for_events
+
+*/
+
+self.addEventListener('notificationclick', (event) => {
+  let notification = event.notification
+  let action = event.action
+
+  console.log('main notif clicked')
+  notification.close()
+})
+
+self.addEventListener('notificationclose', (event) => {
+  console.log('notif was close')
+})

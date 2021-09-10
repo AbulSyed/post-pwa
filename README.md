@@ -19,6 +19,7 @@ PWA is an enhanced web app that looks and feels like a native app.
 - Workbox - Google tool that makes working with a service worker easier. Workbox makes the following easier:
   - Precaching & caching strategies
   - Background sync
+- Push subscription - accociates users browser to the browsers push notification server
 
 ## Building a PWA with quasar
 
@@ -122,6 +123,15 @@ backgroundSyncSupported() {
 let backgroundSyncSupported = 'sync' in self.registration ? true: false
 ```
 - Reading https://developers.google.com/web/tools/workbox/modules/workbox-background-sync [Workbox Background Sync]
+
+## Push notifications
+- A push notification main purpose is to increase user engangement even when app is closed. Push notifications rely on service workers to listen out for push messages.
+
+### How to get push notifications working
+- We need to create a push subscription for each user
+- We will store user subscription in a database, subscription contains keys and push server url
+- We will then send a request to the server url, the server will respond with message to users browser
+- Finally we need to listen out for message sent, with service worker to be displayed onto the browser
 
 ## Install the dependencies
 ```bash
