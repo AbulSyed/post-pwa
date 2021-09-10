@@ -129,8 +129,9 @@ let backgroundSyncSupported = 'sync' in self.registration ? true: false
 
 ### How to get push notifications working
 - We need to create a push subscription for each user
-- We will store user subscription in a database, subscription contains keys and push server url
-- We will then send a request to the server url, the server will respond with message to users browser
+- Then store the user subscription in a database. Subscription contains keys and push server url
+  - We need to secure our push subscription, ensuring push notification can only be sent by authenticated backends
+- We will then send a request to the server url, the server will respond with message to the users browser
 - Finally we need to listen out for message sent, with service worker to be displayed onto the browser
 
 ## Install the dependencies
