@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "web-push": "web-push"
   },
   "author": "",
   "license": "ISC",
@@ -12,7 +13,8 @@
     "busboy": "^0.3.1",
     "express": "^4.17.1",
     "firebase-admin": "^9.11.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "web-push": "^3.4.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"

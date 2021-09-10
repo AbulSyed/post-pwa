@@ -20,6 +20,7 @@ PWA is an enhanced web app that looks and feels like a native app.
   - Precaching & caching strategies
   - Background sync
 - Push subscription - accociates users browser to the browsers push notification server
+  - applicationServerKey - P-256 public key that the push server will use to authenticate your application server.
 
 ## Building a PWA with quasar
 
@@ -133,6 +134,11 @@ let backgroundSyncSupported = 'sync' in self.registration ? true: false
   - We need to secure our push subscription, ensuring push notification can only be sent by authenticated backends
 - We will then send a request to the server url, the server will respond with message to the users browser
 - Finally we need to listen out for message sent, with service worker to be displayed onto the browser
+
+### Creating push subscription
+- The subscribe() method of the PushManager interface subscribes to a push service.
+- It returns a Promise that resolves to a PushSubscription object containing details of a push subscription & creates a new push subscription.
+- Useful reading on PushManager.subscribe() https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe
 
 ## Install the dependencies
 ```bash

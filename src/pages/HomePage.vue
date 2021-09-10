@@ -131,8 +131,31 @@ export default {
       Notification.requestPermission(res => {
         // this.neverShowNotifsBanner()
         if(res === 'granted') {
-          this.displayGrantedNotif()
+          // this.displayGrantedNotif()
+          this.checkForExistingPushNotif()
         }
+      })
+    },
+    checkForExistingPushNotif(){
+      if(this.serviceWorkerSupported && this.pushNotifsSupported) {
+        // check if there is subscription already present
+        navigator.serviceWorker.ready.then(swreg => {
+          return swreg.pushManager.getSubscription()
+        }).then(sub => {
+          if(!sub) {
+            this.createPushSubscription()
+          }
+        })
+      }
+    },
+    createPushSubscription(){
+      navigator.serviceWorker.ready.then(swreg => {
+        swreg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: process.env.PUBLIC_KEY
+        }).then(sub => {
+          console.log(sub)
+        })
       })
     },
     displayGrantedNotif(){
