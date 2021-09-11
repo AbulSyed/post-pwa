@@ -154,7 +154,18 @@ export default {
           userVisibleOnly: true,
           applicationServerKey: process.env.PUBLIC_KEY
         }).then(sub => {
-          console.log(sub)
+          let subData = sub.toJSON()
+          return this.$axios.post(`${process.env.API}/subscription`, {
+            endpoint: subData.endpoint,
+            keys: {
+              auth: subData.keys.auth,
+              p256dh: subData.keys.p256dh
+            }
+          }).then(res => {
+            this.displayGrantedNotif()
+          }).catch(err => {
+            console.log(err)
+          })
         })
       })
     },

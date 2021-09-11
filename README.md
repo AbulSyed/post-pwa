@@ -135,10 +135,41 @@ let backgroundSyncSupported = 'sync' in self.registration ? true: false
 - We will then send a request to the server url, the server will respond with message to the users browser
 - Finally we need to listen out for message sent, with service worker to be displayed onto the browser
 
-### Creating push subscription
+### Creating push subscription using webpush to secure push subscriptions
 - The subscribe() method of the PushManager interface subscribes to a push service.
 - It returns a Promise that resolves to a PushSubscription object containing details of a push subscription & creates a new push subscription.
+```
+navigator.serviceWorker.ready.then(swreg => {
+  swreg.pushManager.subscribe()
+})
+```
 - Useful reading on PushManager.subscribe() https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe
+- Web push requires that push messages triggered from a backend be done via the Web Push Protocol https://github.com/web-push-libs/web-push
+- To create a push subscription, we need a applicationServerKey. This can be generated using ```web-push generate-vapid-keys```. This generates a public and private. The public key can be used as applicationServerKey on the client, and both public can private keys will be required on the backend.
+- After creating a push subscription, this returns a server url and some extra keys. We will need to store this in our db for use when sending a notification from our backend server.
+```
+createPushSubscription(){
+  navigator.serviceWorker.ready.then(swreg => {
+    swreg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: process.env.PUBLIC_KEY
+    }).then(sub => {
+      let subData = sub.toJSON()
+      return this.$axios.post(`${process.env.API}/subscription`, {
+        endpoint: subData.endpoint,
+        keys: {
+          auth: subData.keys.auth,
+          p256dh: subData.keys.p256dh
+        }
+      }).then(res => {
+        this.displayGrantedNotif()
+      }).catch(err => {
+        console.log(err)
+      })
+    })
+  })
+}
+```
 
 ## Install the dependencies
 ```bash

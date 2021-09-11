@@ -39,7 +39,7 @@ const db = admin.firestore();
 const bucket = admin.storage().bucket();
 
 router.get('/posts', async (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
+  // res.set('Access-Control-Allow-Origin', '*');
   
   const posts = [];
 
@@ -54,7 +54,7 @@ router.get('/posts', async (req, res) => {
 });
 
 router.post('/posts', async (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
+  // res.set('Access-Control-Allow-Origin', '*');
 
   const uuid = v4();
 
@@ -120,6 +120,20 @@ router.post('/posts', async (req, res) => {
   });
 
   req.pipe(busboy);
+});
+
+router.post('/subscription', async (req, res) => {
+  // res.set('Access-Control-Allow-Origin', '*');
+
+  try {
+    db.collection('subscriptions').add(req.body);
+
+    res.status(200).send({
+      message: 'subscription added'
+    });
+  }catch(err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;
