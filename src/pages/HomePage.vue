@@ -129,7 +129,7 @@ export default {
     },
     enableNotifs(){
       Notification.requestPermission(res => {
-        // this.neverShowNotifsBanner()
+        this.neverShowNotifsBanner()
         if(res === 'granted') {
           // this.displayGrantedNotif()
           this.checkForExistingPushNotif()

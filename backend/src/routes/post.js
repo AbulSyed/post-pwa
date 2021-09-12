@@ -15,6 +15,20 @@ const path = require('path');
 const os = require('os'); // allows access the temp folder
 const fs = require('fs'); // allows to write file to temp folder
 const { v4 } = require('uuid');
+const webpush = require('web-push');
+require('dotenv').config();
+
+/*
+  Web-push config
+
+  https://github.com/web-push-libs/web-push
+*/
+
+webpush.setVapidDetails(
+  'mailto:test@test.com',
+  process.env.PUBLIC_KEY,
+  process.env.PRIVATE_KEY
+);
 
 /*
   Cloud firestore connection
@@ -112,10 +126,39 @@ router.post('/posts', async (req, res) => {
         };
         await docRef.set(doc);
 
+        sendPushNotif();
         res.status(200).send(doc);
       }catch(err) {
         console.log(err);
       }
+    }
+
+    const sendPushNotif = async () => {
+      const subscriptions = [];
+
+      const snapshot = await db.collection('subscriptions').get();
+
+      snapshot.forEach((doc) => {
+        subscriptions.push(doc.data());
+      });
+
+      subscriptions.forEach(subscription => {
+        const pushSubscription = {
+          endpoint: subscription.endpoint,
+          keys: {
+            auth: subscription.keys.auth,
+            p256dh: subscription.keys.p256dh
+          }
+        };
+        
+        // can also send a object, just make to parse data in SW
+        // webpush.sendNotification(pushSubscription, JSON.stringify({
+        //   title: 'New post!',
+        //   body: 'New post added, check it out!'
+        // }));
+
+        webpush.sendNotification(pushSubscription, 'New post added, check it out!');
+      })
     }
   });
 

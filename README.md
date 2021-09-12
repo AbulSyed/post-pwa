@@ -145,7 +145,7 @@ navigator.serviceWorker.ready.then(swreg => {
 ```
 - Useful reading on PushManager.subscribe() https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe
 - Web push requires that push messages triggered from a backend be done via the Web Push Protocol https://github.com/web-push-libs/web-push
-- To create a push subscription, we need a applicationServerKey. This can be generated using ```web-push generate-vapid-keys```. This generates a public and private. The public key can be used as applicationServerKey on the client, and both public can private keys will be required on the backend.
+- To create a push subscription, we need a applicationServerKey. This can be generated using ```web-push generate-vapid-keys```. This generates a public and private key. The public key can be used as applicationServerKey on the client, and both public can private keys will be required on the backend.
 - After creating a push subscription, this returns a server url and some extra keys. We will need to store this in our db for use when sending a notification from our backend server.
 ```
 createPushSubscription(){
@@ -169,6 +169,49 @@ createPushSubscription(){
     })
   })
 }
+```
+
+### Sending message to subscribed users from backend
+- Configure web-push vapid keys
+```
+webpush.setVapidDetails(
+  'mailto:test@test.com',
+  process.env.PUBLIC_KEY,
+  process.env.PRIVATE_KEY
+);
+```
+- Now use webpush.sendNotification method to send message to each subscribed user
+```
+subscriptions.forEach(subscription => {
+  const pushSubscription = {
+    endpoint: subscription.endpoint,
+    keys: {
+      auth: subscription.keys.auth,
+      p256dh: subscription.keys.p256dh
+    }
+  };
+  
+  webpush.sendNotification(pushSubscription, 'New post added');
+})
+```
+
+### Listening for event in service worker and displaying it
+```
+self.addEventListener('push', (event) => {
+  console.log(event);
+
+  if(event.data){
+    let data = event.data.text();
+    // ensures SW nevers goes to sleep and stays alive waiting for a push message
+    event.waitUntil(
+      self.registration.showNotification('New post!', {
+        body: data,
+        icon: 'icons/icon-128x128.png',
+        badge: 'icons/icon-128x128.png'
+      })
+    )
+  }
+})
 ```
 
 ## Install the dependencies

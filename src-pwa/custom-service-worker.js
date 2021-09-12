@@ -111,3 +111,17 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('notificationclose', (event) => {
   console.log('notif was close')
 })
+
+self.addEventListener('push', (event) => {
+  if(event.data){
+    let data = event.data.text();
+    // ensures SW nevers goes to sleep and stays alive waiting for a push message
+    event.waitUntil(
+      self.registration.showNotification('New post!', {
+        body: data,
+        icon: 'icons/icon-128x128.png',
+        badge: 'icons/icon-128x128.png'
+      })
+    )
+  }
+})
