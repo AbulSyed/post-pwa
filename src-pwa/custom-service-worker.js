@@ -104,7 +104,18 @@ self.addEventListener('notificationclick', (event) => {
   let notification = event.notification
   let action = event.action
 
-  console.log('main notif clicked')
+  event.waitUntil(
+    clients.matchAll().then(clis => {
+      let clientUsingApp = clis.find(cli => {
+        return cli.visibilityState === 'visible'
+      })
+      if(clientUsingApp) {
+        clientUsingApp.navigate('/#/')
+      }else {
+        clients.openWindow('/#/')
+      }
+    })
+  )
   notification.close()
 })
 
